@@ -94,5 +94,6 @@ class Inotify(object):
         return self.fd
 
 def mask_str(mask):
-    return ' | '.join(name for name, val in FLAG_NAMES.items() if val & mask)
+    return ' | '.join(name for name, val in FLAG_NAMES.items()
+            if name != 'IN_ALL_EVENTS' and val & mask)
 
