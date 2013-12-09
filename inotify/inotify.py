@@ -16,7 +16,7 @@ from flags import *
 read_buf_size    = 1024
 inotify_evt_size = struct.calcsize('iIII')
 
-inotify_event = namedtuple('inotify_event', ['wd', 'mask', 'cookie', 'name'])
+inotify_event = namedtuple('inotify_event', ['path', 'mask', 'cookie', 'name'])
 
 libc = cdll.LoadLibrary('libc.so.6')
 libc.__errno_location.restype = POINTER(c_int)
@@ -54,7 +54,9 @@ class Inotify(object):
                 '%ds' % name_len,
                 buf[inotify_evt_size:inotify_evt_size+name_len])
         name = name[0].rstrip('\x00')
-        return inotify_event(wd, mask, cookie, name)
+
+        path = [k for k,v in self.wd.items() if v == wd][0]
+        return inotify_event(path, mask, cookie, name)
 
 
     def add_watch(self, path, mask):
