@@ -31,6 +31,9 @@ class InotifyError (OSError):
     pass
 
 class Inotify(object):
+    '''A low-level inotify class for use in poll/select based event
+    loops.'''
+
     def __init__(self):
         self.wd = {}
         self.fd = libc.inotify_init()
