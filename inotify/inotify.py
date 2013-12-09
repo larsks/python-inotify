@@ -74,6 +74,8 @@ class Inotify(object):
 
 
     def rm_watch(self, path):
+        '''Delete the watch point for the given path'''
+
         if not path in self.wd:
             raise OSError(errno.ENOENT, 'No watch exists on %s' % path)
 
@@ -86,6 +88,8 @@ class Inotify(object):
 
 
     def close(self):
+        '''Close this Inotify object'''
+
         ret = os.close(self.fd)
         if ret == -1:
             raise OSError(geterr(), 'Failed to close inotify descriptor')
@@ -94,6 +98,12 @@ class Inotify(object):
     def fileno(self):
         '''Returns the integer file descriptor of this inotify object.'''
         return self.fd
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
 
 def mask_str(mask):
     return ' | '.join(name for name, val in FLAG_NAMES.items()
